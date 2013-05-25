@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Carp A Diem]]></title>
-  <link href="http://carps.dugancathal.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Starting | Carp A Diem]]></title>
+  <link href="http://carps.dugancathal.com/blog/categories/starting/atom.xml" rel="self"/>
   <link href="http://carps.dugancathal.com/"/>
   <updated>2013-05-25T11:13:46-06:00</updated>
   <id>http://carps.dugancathal.com/</id>
