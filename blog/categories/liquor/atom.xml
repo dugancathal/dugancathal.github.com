@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Carp A Diem]]></title>
-  <link href="http://carps.dugancathal.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Liquor | Carp A Diem]]></title>
+  <link href="http://carps.dugancathal.com/blog/categories/liquor/atom.xml" rel="self"/>
   <link href="http://carps.dugancathal.com/"/>
   <updated>2013-05-25T22:16:39-06:00</updated>
   <id>http://carps.dugancathal.com/</id>
@@ -43,21 +43,6 @@
 <li><p>Pour equal parts soda and Margarita mix to top</p></li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Getting Started]]></title>
-    <link href="http://carps.dugancathal.com/blog/2013/05/25/getting-started/"/>
-    <updated>2013-05-25T11:08:00-06:00</updated>
-    <id>http://carps.dugancathal.com/blog/2013/05/25/getting-started</id>
-    <content type="html"><![CDATA[<p>Welcome to my (generated) blog. I will be updating this in the near future, but for now, I&rsquo;m just getting used to Octopress.</p>
-
-<p>Don&rsquo;t judge the (tacky) standard page layout as that will be changing, too.</p>
-
-<p>Please keep checking back for the day when I actually post something worthwhile on a variety of topics.</p>
-
-<p>TJ</p>
 ]]></content>
   </entry>
   
