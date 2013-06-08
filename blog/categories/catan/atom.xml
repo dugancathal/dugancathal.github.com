@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Geek | Carp A Diem]]></title>
-  <link href="http://carps.dugancathal.com/blog/categories/geek/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Catan | Carp A Diem]]></title>
+  <link href="http://carps.dugancathal.com/blog/categories/catan/atom.xml" rel="self"/>
   <link href="http://carps.dugancathal.com/"/>
   <updated>2013-06-08T02:06:42-06:00</updated>
   <id>http://carps.dugancathal.com/</id>
@@ -162,42 +162,6 @@ grid[HexPoint.new(0, 0)] #=&amp;gt; nil
 </p>
 
 <p>And it finally worked! I might, at some point, end up having to implement #== and/or #===, but for now, the only comparison of points is being done in the background by the Hash(s), so I&rsquo;m not worried, and I&rsquo;ll continue coding on.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[My Take on the Shadow Broker]]></title>
-    <link href="http://carps.dugancathal.com/blog/2013/05/25/my-take-on-the-shadow-broker/"/>
-    <updated>2013-05-25T22:02:00-06:00</updated>
-    <id>http://carps.dugancathal.com/blog/2013/05/25/my-take-on-the-shadow-broker</id>
-    <content type="html"><![CDATA[<p>Enjoy this while playing your favorite XBox game and kicking ass the Asari way.</p>
-
-<!-- more -->
-
-
-<p>Ingredients:</p>
-
-<ul>
-<li><p>1 shot Blue Curacao</p></li>
-<li><p>2 shots Vodka (Pick your poison, but I stick with Grey Goose)</p></li>
-<li><p>2 shots Hypnotiq</p></li>
-<li><p>Lemon-Lime soda (I prefer Sprite)</p></li>
-<li><p>Margarita mix</p></li>
-<li><p>8-10 Blueberries</p></li>
-<li><p>Ice (optional, your liquor should be cold already)</p></li>
-</ul>
-
-
-<p>Process:</p>
-
-<ol>
-<li><p>Place the blueberries in the glass.</p></li>
-<li><p>Add vodka</p></li>
-<li><p>Add Hypnotiq</p></li>
-<li><p>Add Blue Curacao</p></li>
-<li><p>Pour equal parts soda and Margarita mix to top</p></li>
-</ol>
-
 ]]></content>
   </entry>
   

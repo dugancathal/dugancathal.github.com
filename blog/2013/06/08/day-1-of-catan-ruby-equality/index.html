@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>My Take on the Shadow Broker - Carp A Diem</title>
+  <title>Day 1 of Catan: Ruby Equality - Carp A Diem</title>
   <meta name="author" content="TJ Taylor">
 
   
-  <meta name="description" content="Enjoy this while playing your favorite XBox game and kicking ass the Asari way. Ingredients: 1 shot Blue Curacao
-2 shots Vodka (Pick your poison, but &hellip;">
+  <meta name="description" content="I&rsquo;ve started coding up a Ruby version of the awesome board game the Settlers of Catan. Ideally, it will be a Rails app that allows for &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://carps.dugancathal.com/blog/2013/05/25/my-take-on-the-shadow-broker">
+  <link rel="canonical" href="http://carps.dugancathal.com/blog/2013/06/08/day-1-of-catan-ruby-equality">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Carp A Diem" type="application/atom+xml">
@@ -69,7 +68,7 @@
   
   <header>
     
-      <h1 class="entry-title">My Take on the Shadow Broker</h1>
+      <h1 class="entry-title">Day 1 of Catan: Ruby Equality</h1>
     
     
       <p class="meta">
@@ -85,7 +84,7 @@
   
 
 
-<time datetime="2013-05-25T22:02:00-06:00" pubdate data-updated="true">May 25<span>th</span>, 2013</time>
+<time datetime="2013-06-08T01:23:00-06:00" pubdate data-updated="true">Jun 8<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -94,34 +93,130 @@
   </header>
 
 
-<div class="entry-content"><p>Enjoy this while playing your favorite XBox game and kicking ass the Asari way.</p>
+<div class="entry-content"><p>I&rsquo;ve started coding up a Ruby version of the awesome board game <em>the Settlers of Catan</em>. Ideally, it will be a Rails app that allows for multiplayer interaction and enjoyment of the game. Why, you ask? Because I can, and because Ruby doesn&rsquo;t have a Catan version yet!</p>
+
+<p>There are a lot of interesting things that go in to programming a game, and I hope to bring a few of my lessons learned to this blog, starting with, today, a reminder on how Ruby checks equality.</p>
 
 <!-- more -->
 
 
-<p>Ingredients:</p>
+<h2>Comparable (&lt;=>), ===, ==, eql?, equals?, and #hash</h2>
 
-<ul>
-<li><p>1 shot Blue Curacao</p></li>
-<li><p>2 shots Vodka (Pick your poison, but I stick with Grey Goose)</p></li>
-<li><p>2 shots Hypnotiq</p></li>
-<li><p>Lemon-Lime soda (I prefer Sprite)</p></li>
-<li><p>Margarita mix</p></li>
-<li><p>8-10 Blueberries</p></li>
-<li><p>Ice (optional, your liquor should be cold already)</p></li>
-</ul>
+<p>Ruby measures equality in, you guessed it, several ways, and all for separate reasons.</p>
+
+<p>For the purpose of argument, say we have a class that represents a point in Hexagonal space. (Think of it as perverted 3D. Look at <a href="http://www.redblobgames.com/grids/hexagons/#neighbors">this awesome article</a> for some really good information on where I got this). And suppose, then, that we want to be able to lookup in a hash based on these points.</p>
+
+<p>My first implementation was something like this:</p>
+
+<div>
+  <pre><code class='ruby'>class HexPoint
+      attr_reader :x, :y
+
+      def initialize(x, y)
+        @x, @y = x, y
+      end
+
+      def z
+        0 - x - y
+      end
+    end
+
+    grid = {}
+    grid[HexPoint.new(0, 0)] = Object.new
+    grid[HexPoint.new(0, 0)] #=&gt; nil</code></pre>
+</div>
 
 
-<p>Process:</p>
+<p>I quickly realized that this wasn&rsquo;t working. And so, remembering something about Comparable from way back, I thought, &ldquo;Hey, maybe?&rdquo;</p>
 
-<ol>
-<li><p>Place the blueberries in the glass.</p></li>
-<li><p>Add vodka</p></li>
-<li><p>Add Hypnotiq</p></li>
-<li><p>Add Blue Curacao</p></li>
-<li><p>Pour equal parts soda and Margarita mix to top</p></li>
-</ol>
+<p>After looking at the <a href="http://ruby-doc.org/core-2.0/Comparable.html">docs</a> though, it was quite clear that Comparable was not what I was looking for; hell, the first line says &ldquo;The Comparable mixin is used by classes whose objects may be ordered&rdquo;.</p>
 
+<p>I moved onward to other things &hellip; and tried implementing #==.</p>
+
+<div>
+  <pre><code class='ruby'>class HexPoint
+      attr_reader :x, :y
+
+      def initialize(x, y)
+        @x, @y = x, y
+      end
+
+      def z
+        0 - x - y
+      end
+
+      def ==(other)
+        x == other.x &amp;&amp; y == other.y
+      end
+    end
+
+    grid = {}
+    grid[HexPoint.new(0, 0)] = Object.new
+    grid[HexPoint.new(0, 0)] #=&gt; nil</code></pre>
+</div>
+
+
+<p>Same bat-time, same bat-channel. No dice. Not one to lose heart, though, I remembered my old, forgotten friend equal? Unfortunately, got the same darned result for #equal?, #===, and #eql?.</p>
+
+<p>Finally, I recalled that hashes make use of the often unheard-of method #hash (which is <a href="http://ruby-doc.org/core-2.0/Object.html#method-i-hash">defined on Object</a>), and generates a unique Fixnum for any object. This method can, as with all methods in Ruby, be overridden to generate a SPECIFIC unique Fixnum for your objects. A word of caution, though: according to the documentation, this number should not be the same across multiple invocations of Ruby (that is, if you kill the process and start it again, it should be different). This is in response to <a href="http://www.ruby-lang.org/en/news/2012/11/09/ruby19-hashdos-cve-2012-5371/">a Denial of Service vulnerability</a> found in Ruby 1.9.</p>
+
+<p>Knowing that, then, I tried this:</p>
+
+<div>
+  <pre><code class='ruby'>class HexPoint
+      attr_reader :x, :y
+
+      def initialize(x, y)
+        @x, @y = x, y
+      end
+
+      def z
+        0 - x - y
+      end
+
+      def hash
+        [x, y, z].hash
+      end
+    end
+
+    grid = {}
+    grid[HexPoint.new(0, 0)] = Object.new
+    grid[HexPoint.new(0, 0)] #=&gt; nil</code></pre>
+</div>
+
+
+<p>This generates a nice, consistent hash value from the <em>array</em> of x, y, and z, thereby mitigating collision issues because the order matters. But still, this isn&rsquo;t quite right. Hashes, believe it or not, use a combination of #eql? <em>and</em> #hash to work on their keys.</p>
+
+<p>Seventh times a charm, I threw an #eql? implementation in, and went with this:</p>
+
+<div>
+  <pre><code class='ruby'>class HexPoint
+      attr_reader :x, :y
+
+      def initialize(x, y)
+        @x, @y = x, y
+      end
+
+      def z
+        0 - x - y
+      end
+
+      def eql?(other)
+        x == other.x &amp;&amp; y == other.y
+      end
+
+      def hash 
+        [x, y, z].hash
+      end
+    end
+
+    grid = {}
+    grid[HexPoint.new(0, 0)] = Object.new
+    grid[HexPoint.new(0, 0)] #=&gt; nil</code></pre>
+</div>
+
+
+<p>And it finally worked! I might, at some point, end up having to implement #== and/or #===, but for now, the only comparison of points is being done in the background by the Hash(s), so I&rsquo;m not worried, and I&rsquo;ll continue coding on.</p>
 </div>
 
 
@@ -144,12 +239,12 @@
   
 
 
-<time datetime="2013-05-25T22:02:00-06:00" pubdate data-updated="true">May 25<span>th</span>, 2013</time>
+<time datetime="2013-06-08T01:23:00-06:00" pubdate data-updated="true">Jun 8<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/geek/'>Geek</a>, <a class='category' href='/blog/categories/liquor/'>Liquor</a>, <a class='category' href='/blog/categories/recipe/'>Recipe</a>
+    <a class='category' href='/blog/categories/catan/'>Catan</a>, <a class='category' href='/blog/categories/geek/'>Geek</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
   
 </span>
 
@@ -158,7 +253,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://carps.dugancathal.com/blog/2013/05/25/my-take-on-the-shadow-broker/" data-via="dugancathal" data-counturl="http://carps.dugancathal.com/blog/2013/05/25/my-take-on-the-shadow-broker/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://carps.dugancathal.com/blog/2013/06/08/day-1-of-catan-ruby-equality/" data-via="dugancathal" data-counturl="http://carps.dugancathal.com/blog/2013/06/08/day-1-of-catan-ruby-equality/" >Tweet</a>
   
   
   
@@ -169,10 +264,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/05/25/getting-started/" title="Previous Post: Getting Started">&laquo; Getting Started</a>
+        <a class="basic-alignment left" href="/blog/2013/05/25/my-take-on-the-shadow-broker/" title="Previous Post: My Take on the Shadow Broker">&laquo; My Take on the Shadow Broker</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/06/08/day-1-of-catan-ruby-equality/" title="Next Post: Day 1 of Catan: Ruby Equality">Day 1 of Catan: Ruby Equality &raquo;</a>
       
     </p>
   </footer>
@@ -268,8 +361,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://carps.dugancathal.com/blog/2013/05/25/my-take-on-the-shadow-broker/';
-        var disqus_url = 'http://carps.dugancathal.com/blog/2013/05/25/my-take-on-the-shadow-broker/';
+        var disqus_identifier = 'http://carps.dugancathal.com/blog/2013/06/08/day-1-of-catan-ruby-equality/';
+        var disqus_url = 'http://carps.dugancathal.com/blog/2013/06/08/day-1-of-catan-ruby-equality/';
         var disqus_script = 'embed.js';
       
     (function () {
