@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Tech | Carp A Diem]]></title>
+  <link href="http://carps.dugancathal.com/blog/categories/tech/atom.xml" rel="self"/>
+  <link href="http://carps.dugancathal.com/"/>
+  <updated>2013-10-12T21:55:11-06:00</updated>
+  <id>http://carps.dugancathal.com/</id>
+  <author>
+    <name><![CDATA[TJ Taylor]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Just Enough tmux to be Dangerous]]></title>
+    <link href="http://carps.dugancathal.com/blog/2013/08/07/just-enough-tmux-to-be-dangerous/"/>
+    <updated>2013-08-07T12:32:00-06:00</updated>
+    <id>http://carps.dugancathal.com/blog/2013/08/07/just-enough-tmux-to-be-dangerous</id>
+    <content type="html"><![CDATA[<p>The other day, a friend of mine expressed interest in learning about tmux but
+was stumped by the lack of good resources for ramping up. Here, I aim to put
+down a few key points that let you get going.</p>
+
+<!-- more -->
+
+
+<h2>Background</h2>
+
+<p>First, a little bit of information. tmux is a &ldquo;Terminal Mulitplexer&rdquo;, meaning
+that it can run multiple terminals within another (e.g. TERM-CEPTION!). This can
+be extremely useful because it allows you to keep all of the things you need on
+one screen in &ldquo;panes&rdquo; or multiple tab-like screens called &ldquo;windows&rdquo;.</p>
+
+<p>But most terminals now-a-days can do that. Some of the real power of tmux
+becomes evident when you look at its concept of sessions. As tmux is a
+server-client based architecture, whenever you fire up a tmux session, you&rsquo;re
+actually first checking if there is a tmux server, creating one if there isn&rsquo;t,
+and then attaching to the most previous session (and creating one of those if
+there isn&rsquo;t one).</p>
+
+<p>This feature lets you keep several projects &ldquo;live&rdquo; at one time. Say, for
+instance, that you&rsquo;re building a JS-heavy front-end app that&rsquo;s hooking into a
+Rails API that you&rsquo;re building. You could have a session for the Rails app that
+has your server, a console, your tests, and an editor open at the same time as
+a session for your JS app. Then, because tmux has a server, even if you close
+your terminal application (be it iTerm or Terminal) you can just re-attach to
+those sessions after opening up another terminal app.</p>
+
+<p>Additionally, this concept of long-lived terminal sessions provides a powerful,
+low-latency tool for remote pair-programming. The host can start a session and
+provide access to the remote client via SSH, et voilá, you&rsquo;re sharing a screen!</p>
+
+<h2>Installation</h2>
+
+<p>If you&rsquo;re running Mac OS, it&rsquo;s pretty easy to use Homebrew to get tmux on your
+machine.</p>
+
+<pre><code>$ brew install tmux
+</code></pre>
+
+<p>Otherwise, you can follow the typical pattern of downloading and building the
+source code yourself from <a href="tmux.sourceforge.net">the website</a>. The instructions
+for that are well defined in <a href="http://sourceforge.net/p/tmux/tmux-code/ci/master/tree/README">their
+README</a>.</p>
+
+<h2>Ramping up</h2>
+
+<p>The easiest way to get started with tmux is to just start a new session.</p>
+
+<pre><code>$ tmux
+</code></pre>
+
+<p>It should look pretty much like your normal shell, but you now have a bar across
+the bottom of the terminal with some additional data on it. You are now in a
+tmux &ldquo;window&rdquo;. For now, just think of this as the analog to a normal terminal&rsquo;s
+tabs.</p>
+
+<p>Tmux has the concept of a &ldquo;prefix sequence&rdquo; which defaults to CTRL+b. This is
+similar to vim&rsquo;s leader key; it signals to tmux that you&rsquo;re about to do
+something relating to your shell.</p>
+
+<p>By pressing <code>&lt;prefix&gt;-c</code> (that is CTRL+b, followed by a lowercase c), you
+should create a new tmux window, and at the bottom of your screen, there should
+now be something resembling &ldquo;1:~*&rdquo;. That&rsquo;s tmux&rsquo;s way of saying that you&rsquo;re on
+window 1 in your current directory with nothing running (the asterisk (*) means
+current window). You can navigate back to window 0 using <code>&lt;prefix&gt;-0</code> (and,
+similarly to window N with <code>&lt;prefix&gt;-N</code>). To &ldquo;kill&rdquo; a window, you can use
+<code>&lt;prefix&gt;-&amp;</code>. This will ask you if you really wish to kill it, and then close
+the window and any running processes it contains.</p>
+
+<h2>The tmux config file (.tmux.conf)</h2>
+
+<p>You can customize tmux with a custom prefix and bindings in your home
+directory&rsquo;s <code>.tmux.conf</code> file. To do that, you just need to &ldquo;unbind&rdquo; the prefix
+from <code>&lt;prefix&gt;-b</code> and then bind it to the key combination of your choice.</p>
+
+<pre><code>unbind &lt;C-b&gt;
+bind-key &lt;C-x&gt; # Or the character of your choosing
+</code></pre>
+
+<p>There&rsquo;s a lot more you can do in here, but that&rsquo;s another topic altogether.</p>
+
+<h2>Splits, VSplits, and Panes</h2>
+
+<p>Now for the thing that everyone thinks of when they see tmux: panes. Panes are
+contained by windows and allow you split windows vertically and horizontally.
+The keyboard shortcuts for these are:</p>
+
+<pre><code>&lt;prefix&gt;-% # Vertical split
+&lt;prefix&gt;-" # Horizontal split
+</code></pre>
+
+<p>Once you have your window split into panes, you can navigate between panes using
+the prefix and arrow keys.</p>
+
+<pre><code>&lt;prefix&gt;-UP # Move to the pane above your current
+&lt;prefix&gt;-RIGHT # Move to the pane to the right of your current
+&lt;prefix&gt;-LEFT # Move to the pane to the left of your current
+&lt;prefix&gt;-DOWN # Move to the pane below your current
+</code></pre>
+
+<p>As a vim user, I have these all bound to the vim keys for moving around. In my
+<code>.tmux.conf</code>:</p>
+
+<pre><code>bind-key h select-pane -L
+bind-key j select-pane -D
+bind-key k select-pane -U
+bind-key l select-pane -R
+</code></pre>
+
+<p>You can &ldquo;kill&rdquo; a pane with <code>&lt;prefix&gt;-x</code>; keep in mind that, similar to killing a
+window, this actually closes the shell that&rsquo;s running in that pane, so if you have
+a process running, it will die unless it can handle detachment from a terminal.</p>
+
+<h2>Sessions and Session Management</h2>
+
+<p>Remember me saying that sessions are one of the coolest parts of tmux? Let&rsquo;s dig
+into that, shall we?</p>
+
+<p>From a command prompt (within tmux or not, it doesn&rsquo;t matter), type:</p>
+
+<pre><code>$ tmux list-sessions
+</code></pre>
+
+<p>You should now have a screen that says something like</p>
+
+<pre><code>0: 2 windows (created Thu Oct 10 09:11:09 2013) [204x53] (attached)
+</code></pre>
+
+<p>That means the session named 0 has 2 windows open and that someone is currently
+attached to it (as well as the other obvious metadata).</p>
+
+<p>You can rename the session to something more meaningful using the command
+<code>&lt;prefix&gt;-$</code>. That will open up a prompt at the bottom of the screen asking what
+you want to name the current-session.</p>
+
+<p>To open up a new session, I added a binding to my <code>.tmux.conf</code>:</p>
+
+<pre><code>bind-key N command-prompt -I '#S' "new-session '%%'"
+</code></pre>
+
+<p>That lets me open up a new session and specify a name at the command line. Now,
+to switch back to where we were (as starting a new session switches over
+immediately), we can add this binding:</p>
+
+<pre><code>bind-key C-s command-prompt -I #S "attach-session -t '%%'"
+</code></pre>
+
+<p>which, like the preceding binding, asks for the name of the session you want to
+switch to. Interestingly, you can do a partial name and, provided that no other
+session matches that partial, tmux is smart enough to switch. For example, I
+might have two sessions open, &ldquo;carps&rdquo; and &ldquo;triplr&rdquo;. I can switch to &ldquo;carps&rdquo; just
+by typing &ldquo;c&rdquo; at the switch-session command prompt.</p>
+
+<h2>Sign Off</h2>
+
+<p>That was a lot of information and I&rsquo;ve just barely scratched the surface. I plan
+to write a few more of these and get even more detail out in a non-manpage sort
+of way.</p>
+]]></content>
+  </entry>
+  
+</feed>
